@@ -1,0 +1,12 @@
+---
+import Layout from "./Layout.astro";
+const { frontmatter } = Astro.props;
+---
+
+<Layout title={frontmatter.title}>
+  <section class="line-numbers">
+    <h1>{frontmatter.title}</h1>
+    <slot />
+    <script is:inline src="../prism.js"></script>
+  </section>
+</Layout>

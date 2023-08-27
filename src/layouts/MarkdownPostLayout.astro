@@ -1,12 +1,39 @@
 ---
+interface Props {
+  frontmatter: {
+    title: string;
+    description: string;
+    published: string;
+    updated?: string;
+    tags: string[];
+  };
+}
+
 import Layout from "./Layout.astro";
+import "../styles/prism.css";
+
 const { frontmatter } = Astro.props;
 ---
 
 <Layout title={frontmatter.title}>
-  <section class="line-numbers">
-    <h1>{frontmatter.title}</h1>
+  <main class="line-numbers">
+    <h2 class="post-title">{frontmatter.title}</h2>
+    <div class="publish-date">{frontmatter.published}</div>
     <slot />
-    <script is:inline src="../prism.js"></script>
-  </section>
+    <script>
+      import "../scripts/prism";
+    </script>
+  </main>
 </Layout>
+
+<style>
+  main {
+    width: 90%;
+    max-width: 700px;
+    margin: auto;
+
+    & .post-title {
+      font-size: 1.7em;
+    }
+  }
+</style>

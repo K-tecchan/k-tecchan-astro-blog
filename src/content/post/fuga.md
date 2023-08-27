@@ -1,9 +1,12 @@
 ---
 layout: ../../layouts/MarkdownPostLayout.astro
-title: first-post
+title: content-post
+published: 2023/08/31
+description: this is description
+tags: [fuga, piyo]
 ---
 
-aaaaaaaa
+あいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえお
 ```js
 const first = () => {
   setTimeout(() => console.log("task1 done"), 2000);
@@ -28,5 +31,5 @@ def hoge() {
 for i in range(10):
   print('hoge')
 ```
-
+- aaaa
 > hogeeeeee

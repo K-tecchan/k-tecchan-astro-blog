@@ -1,8 +1,26 @@
 ---
 import Layout from "../layouts/Layout.astro";
-const title = "kamewalk";
+const title = "KameWalk";
 ---
 
 <Layout title={title}>
-  <div>hogeeee</div>
+  <main>
+    <div>
+      <a href="/posts/1">go to blog</a>
+    </div>
+  </main>
 </Layout>
+
+<style>
+  main {
+    display: flex;
+    justify-content: center;
+  }
+  div {
+    margin: 200px;
+    font-size: 50px;
+    & a {
+      color: var(--main-color);
+    }
+  }
+</style>

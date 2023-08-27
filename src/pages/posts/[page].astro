@@ -1,0 +1,41 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Card from "../../components/Card.astro";
+import type { GetStaticPaths, Page } from "astro";
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  page: Page<CollectionEntry<"post">>;
+}
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const allPosts = (await getCollection("post")).sort((a, b) =>
+    a.data.published < b.data.published ? 1 : -1
+  );
+
+  return paginate(allPosts, { pageSize: 10 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<Layout title={`KameWalk | ページ${page.currentPage}`}>
+  <main>
+    <ul>
+      {page.data.map(({ data, slug }) => <Card {data} {slug} />)}
+    </ul>
+  </main>
+</Layout>
+
+<style>
+  main {
+    width: 90%;
+    max-width: 700px;
+    margin: auto;
+  }
+
+  ul {
+    padding: 0;
+  }
+</style>

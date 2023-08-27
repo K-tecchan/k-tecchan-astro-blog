@@ -2,6 +2,7 @@
 interface Props {
   title: string;
 }
+
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 const { title } = Astro.props;
@@ -12,31 +13,26 @@ const { title } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../prism.css" />
     <link rel="icon" type="image/png" href="/k-tecchan.png" />
     <title>{title}</title>
   </head>
   <body>
+    <Header />
     <slot />
     <Footer />
   </body>
 </html>
 
-<style>
+<style is:global>
   :root {
-    --accent: 136, 58, 234;
-    --accent-light: 224, 204, 250;
-    --accent-dark: 49, 10, 101;
-    --accent-gradient: linear-gradient(
-      45deg,
-      rgb(var(--accent)),
-      rgb(var(--accent-light)) 30%,
-      white 60%
-    );
+    --typeColor: #d8d8d8;
+    --backgroundColor: #232323;
+    --main-color: #06cdf4;
   }
+
   html {
     font-family: system-ui, sans-serif;
-    background: #232323;
-    color: #d8d8d8;
+    color: var(--typeColor);
+    background: var(--backgroundColor);
   }
 </style>

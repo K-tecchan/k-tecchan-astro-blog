@@ -1,7 +1,6 @@
 ---
-layout: ../../layouts/MarkdownPostLayout.astro
 title: second-post
-published: 2024/08/31
+published: 2024-08-31
 description: this is secondpost
 tags: [hoge, piyo]
 ---

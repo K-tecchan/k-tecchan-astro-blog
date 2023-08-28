@@ -1,7 +1,6 @@
 ---
-layout: ../../layouts/MarkdownPostLayout.astro
 title: content-post
-published: 2023/08/31
+published: 2023-08-31
 description: this is description
 tags: [fuga, piyo]
 ---

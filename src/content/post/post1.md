@@ -1,8 +1,7 @@
 ---
-layout: ../../layouts/MarkdownPostLayout.astro
 title: first-post
-published: 2023/08/31
-description: this is description
+published: 2023-08-31
+description: this is descriptionあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあいうえおあ
 tags: [fuga, piyo]
 ---
 

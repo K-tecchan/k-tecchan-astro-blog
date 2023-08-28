@@ -4,7 +4,7 @@ interface Props {
   data: {
     title: string;
     description: string;
-    published: string;
+    published: Date;
     tags: string[];
   };
 }
@@ -17,7 +17,7 @@ const { slug, data } = Astro.props;
     {data.title}
   </a>
   <p class="description">{data.description}</p>
-  <p class="published">{data.published}</p>
+  <p class="published">{data.published.toLocaleDateString("ja-JP")}</p>
   <ul class="tags">
     {
       data.tags.map((tag) => (
@@ -42,6 +42,10 @@ const { slug, data } = Astro.props;
 
     & .title {
       font-size: 1.1em;
+    }
+
+    & .description {
+      height: 50px;
     }
 
     & a {

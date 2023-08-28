@@ -5,9 +5,27 @@ const title = "KameWalk";
 
 <Layout title={title}>
   <main>
-    <div>
-      <a href="/posts/1">go to blog</a>
-    </div>
+    <section>
+      <div class="my-face">
+        <img src="./k-tecchan.png" alt="k-tecchanの自画像" />
+      </div>
+      <h2>K-tecchan</h2>
+      <!-- <div>
+        <img src="./github-mark-white.svg" alt="GitHub logo" />
+      </div> -->
+      <section>
+        <p>
+          GitHub: <a
+            href="https://github.com/K-tecchan"
+            target="_blank"
+            rel="noopener noreferrer">https://github.com/K-tecchan</a
+          >
+        </p>
+      </section>
+      <div class="sign">
+        <a href="/posts/1">go to blog</a>
+      </div>
+    </section>
   </main>
 </Layout>
 
@@ -15,12 +33,19 @@ const title = "KameWalk";
   main {
     display: flex;
     justify-content: center;
+    text-align: center;
   }
-  div {
-    margin: 200px;
+
+  .my-face {
+    margin-top: 100px;
+  }
+
+  .sign {
+    margin: 30px 0 100px 0;
     font-size: 50px;
-    & a {
-      color: var(--main-color);
-    }
+  }
+
+  a {
+    color: var(--main-color);
   }
 </style>

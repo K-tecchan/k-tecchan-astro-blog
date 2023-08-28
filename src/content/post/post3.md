@@ -1,7 +1,6 @@
 ---
-layout: ../../layouts/MarkdownPostLayout.astro
 title: third-post
-published: 2025/08/31
+published: 2025-08-31
 description: this is third post
 tags: [aaaa, fuga]
 ---

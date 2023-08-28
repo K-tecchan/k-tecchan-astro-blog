@@ -3,8 +3,8 @@ interface Props {
   frontmatter: {
     title: string;
     description: string;
-    published: string;
-    updated?: string;
+    published: Date;
+    updated?: Date;
     tags: string[];
   };
 }
@@ -18,7 +18,18 @@ const { frontmatter } = Astro.props;
 <Layout title={frontmatter.title}>
   <main class="line-numbers">
     <h2 class="post-title">{frontmatter.title}</h2>
-    <div class="publish-date">{frontmatter.published}</div>
+    <ul class="tags">
+      {
+        frontmatter.tags.map((tag) => (
+          <li class="tag">
+            #<a href={`/tags/${tag}`}>{tag}</a>{" "}
+          </li>
+        ))
+      }
+    </ul>
+    <div class="published">
+      {frontmatter.published.toLocaleDateString("ja-JP")}
+    </div>
     <slot />
     <script>
       import "../scripts/prism";
@@ -31,9 +42,25 @@ const { frontmatter } = Astro.props;
     width: 90%;
     max-width: 700px;
     margin: auto;
+    margin-top: 30px;
 
     & .post-title {
       font-size: 1.7em;
+    }
+
+    & .tags {
+      display: flex;
+      gap: 10px;
+      padding: 0;
+
+      & .tag {
+        list-style-type: none;
+      }
+    }
+
+    & a {
+      color: var(--main-color);
+      text-decoration: none;
     }
   }
 </style>

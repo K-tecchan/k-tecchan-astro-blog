@@ -10,10 +10,7 @@ const title = "KameWalk";
         <img src="./k-tecchan.png" alt="k-tecchanの自画像" />
       </div>
       <h2>K-tecchan</h2>
-      <!-- <div>
-        <img src="./github-mark-white.svg" alt="GitHub logo" />
-      </div> -->
-      <section>
+      <section class="sns">
         <p>
           GitHub: <a
             href="https://github.com/K-tecchan"
@@ -21,9 +18,16 @@ const title = "KameWalk";
             rel="noopener noreferrer">https://github.com/K-tecchan</a
           >
         </p>
+        <p>
+          Twitter: <a
+            href="https://twitter.com/tecchanKameWalk"
+            target="_blank"
+            rel="noopener noreferrer">https://twitter.com/tecchanKameWalk</a
+          >
+        </p>
       </section>
       <div class="sign">
-        <a href="/posts/1">go to blog</a>
+        <a href="/blog/1">go to blog</a>
       </div>
     </section>
   </main>
@@ -36,7 +40,16 @@ const title = "KameWalk";
     text-align: center;
   }
 
+  img {
+    width: 90%;
+  }
+  .sns {
+    text-align: left;
+    transform: translate(12.5%);
+  }
+
   .my-face {
+    max-width: 100vw;
     margin-top: 100px;
   }
 

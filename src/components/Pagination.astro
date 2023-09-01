@@ -1,0 +1,38 @@
+---
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  page: Page<CollectionEntry<"post">>;
+}
+
+const { page } = Astro.props;
+---
+
+<ul>
+  <li>{page.url.prev && <a href={page.url.prev}>&lt; prev</a>}</li>
+  <li>{page.url.next && <a href={page.url.next}>next &gt;</a>}</li>
+</ul>
+
+<style>
+  ul {
+    width: 60%;
+    max-width: 500px;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 50px;
+    padding: 0;
+    font-size: 1.4em;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  li {
+    list-style-type: none;
+
+    & a {
+      text-decoration: none;
+      color: var(--main-color);
+    }
+  }
+</style>

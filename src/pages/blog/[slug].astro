@@ -1,8 +1,9 @@
 ---
+import MarkdownPostLayout from "../../layouts/MarkdownPostLayout.astro";
+
 import type { GetStaticPaths } from "astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
-import MarkdownPostLayout from "../../layouts/MarkdownPostLayout.astro";
 
 interface Props {
   post: CollectionEntry<"post">;
@@ -22,5 +23,6 @@ const { Content } = await post.render();
 ---
 
 <MarkdownPostLayout frontmatter={post.data}>
+  {console.log(post)}
   <Content />
 </MarkdownPostLayout>

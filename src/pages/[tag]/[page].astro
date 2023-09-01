@@ -1,42 +1,46 @@
 ---
+import Layout from "../../layouts/Layout.astro";
+import Card from "../../components/Card.astro";
+import Pagination from "../../components/Pagination.astro";
+
 import type { GetStaticPaths, Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
-import Layout from "../../layouts/Layout.astro";
-import Card from "../../components/Card.astro";
 
 interface Props {
-  pages: CollectionEntry<"post">[];
+  page: Page<CollectionEntry<"post">>;
 }
 
-export const getStaticPaths = (async () => {
+export const getStaticPaths = (async ({ paginate }) => {
   const allPosts = await getCollection("post");
   const uniqueTags = [
     ...new Set(allPosts.map((post) => post.data.tags).flat()),
   ];
-  return uniqueTags.map((tag) => {
+  return uniqueTags.flatMap((tag) => {
     const filteredPosts = allPosts.filter((post) =>
-      post.data.tags.includes(tag)
+      post.data.tags.includes(tag),
     );
 
-    return {
+    return paginate(filteredPosts, {
       params: { tag },
-      props: { pages: filteredPosts },
-    };
+      pageSize: 2,
+    });
   });
 }) satisfies GetStaticPaths;
 
 const { tag } = Astro.params;
-const { pages } = Astro.props;
+const { page } = Astro.props;
 ---
 
-<Layout title={tag as string}>
+<Layout title={"KameWalk | #" + (tag as string) + "-" + page.currentPage}>
   <main>
     <h2>#{tag} がついた記事</h2>
     <ul>
-      {pages.map(({ data, slug }) => <Card {data} {slug} />)}
+      {console.log(page)}
+      {page.data.map(({ data, slug }) => <Card {data} {slug} />)}
     </ul>
   </main>
+  <Pagination {page} />
 </Layout>
 
 <style>
@@ -45,6 +49,7 @@ const { pages } = Astro.props;
     max-width: 700px;
     margin: auto;
     margin-top: 0;
+    margin-bottom: 40px;
   }
 
   ul {

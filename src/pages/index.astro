@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 
 import { Image } from "astro:assets";
-import myIcon from '../assets/k-tecchan.png'
+import myIcon from "../assets/k-tecchan.png";
 
 const title = "KameWalk";
 ---
@@ -11,22 +11,26 @@ const title = "KameWalk";
   <main>
     <section>
       <div class="my-face">
-        <Image src={myIcon} alt='k-tecchanの自画像' />
+        <Image src={myIcon} alt="k-tecchanの自画像" />
       </div>
       <h2>K-tecchan</h2>
+      <p class="my-description">
+        2023年から働き始めてます。<br>
+        立派な社会の歯車になれるよう頑張ります。
+      </p>
       <section class="sns">
-        <p>
-          GitHub: <a
+        <p class="github">
+          <a
             href="https://github.com/K-tecchan"
             target="_blank"
-            rel="noopener noreferrer">https://github.com/K-tecchan</a
+            rel="noopener noreferrer">GitHub</a
           >
         </p>
-        <p>
-          Twitter: <a
+        <p class="twitter">
+          <a
             href="https://twitter.com/tecchanKameWalk"
             target="_blank"
-            rel="noopener noreferrer">https://twitter.com/tecchanKameWalk</a
+            rel="noopener noreferrer">Twitter</a
           >
         </p>
       </section>
@@ -45,8 +49,10 @@ const title = "KameWalk";
   }
 
   .sns {
-    text-align: left;
-    transform: translate(12.5%);
+    font-size: 1.4em;
+    display: flex;
+    gap: 35px;
+    justify-content: center;
   }
 
   .my-face {

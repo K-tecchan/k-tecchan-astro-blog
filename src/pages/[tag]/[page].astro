@@ -17,9 +17,9 @@ export const getStaticPaths = (async ({ paginate }) => {
     ...new Set(allPosts.map((post) => post.data.tags).flat()),
   ];
   return uniqueTags.flatMap((tag) => {
-    const filteredPosts = allPosts.filter((post) =>
-      post.data.tags.includes(tag),
-    );
+    const filteredPosts = allPosts
+      .filter((post) => post.data.tags.includes(tag))
+      .sort((a, b) => (a.data.published < b.data.published ? 1 : -1));
 
     return paginate(filteredPosts, {
       params: { tag },
@@ -32,7 +32,7 @@ const { tag } = Astro.params;
 const { page } = Astro.props;
 ---
 
-<Layout title={"KameWalk | #" + (tag as string) + "-" + page.currentPage}>
+<Layout title={"KameWalk / #" + (tag as string) + "-" + page.currentPage}>
   <main>
     <h2>#{tag} がついた記事</h2>
     <ul>

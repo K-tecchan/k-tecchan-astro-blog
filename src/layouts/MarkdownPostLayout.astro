@@ -10,9 +10,11 @@ interface Props {
 }
 
 import Layout from "./Layout.astro";
+import { toZeroPadDate } from "../components/Card.astro";
 import "../styles/prism.css";
 
 const { frontmatter } = Astro.props;
+const published = toZeroPadDate(frontmatter.published);
 ---
 
 <Layout title={frontmatter.title}>
@@ -28,16 +30,18 @@ const { frontmatter } = Astro.props;
       }
     </ul>
     <div class="published">
-      {frontmatter.published.toLocaleDateString("ja-JP")}
+      {published}
     </div>
-    <slot />
+    <section>
+      <slot />
+    </section>
     <script>
       import "../scripts/prism";
     </script>
   </main>
 </Layout>
 
-<style>
+<style is:inline>
   main {
     width: 90%;
     max-width: 700px;
@@ -55,12 +59,25 @@ const { frontmatter } = Astro.props;
 
       & .tag {
         list-style-type: none;
+
+        & a {
+          text-decoration: none;
+        }
       }
     }
 
     & a {
       color: var(--main-color);
-      text-decoration: none;
+    }
+  }
+
+  section {
+    margin: 40px auto 60px;
+    line-height: 1.8;
+
+    & h3 {
+      margin-top: 40px;
+      border-bottom: 1px solid var(--darker-main);
     }
   }
 </style>

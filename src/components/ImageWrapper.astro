@@ -1,11 +1,11 @@
 ---
+import { Image } from "astro:assets";
+
 interface Props {
   src: ImageMetadata;
   alt: string;
   quality: string;
 }
-
-import { Image } from "astro:assets";
 
 const { src, alt, quality } = Astro.props;
 ---

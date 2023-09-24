@@ -1,11 +1,10 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Card from "../../components/Card.astro";
-import Pagination from "../../components/Pagination.astro";
-
 import type { GetStaticPaths, Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Card from "../../components/Card.astro";
+import Pagination from "../../components/Pagination.astro";
 
 interface Props {
   page: Page<CollectionEntry<"post">>;
@@ -23,7 +22,7 @@ export const getStaticPaths = (async ({ paginate }) => {
 
     return paginate(filteredPosts, {
       params: { tag },
-      pageSize: 2,
+      pageSize: 10,
     });
   });
 }) satisfies GetStaticPaths;

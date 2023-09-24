@@ -1,4 +1,6 @@
 ---
+import dayjs from "dayjs";
+
 interface Props {
   slug: string;
   data: {
@@ -10,20 +12,6 @@ interface Props {
 }
 
 const { slug, data } = Astro.props;
-
-export function toZeroPadDate(rawDate: Date): string {
-  const strDate = rawDate.toLocaleDateString("ja-JP");
-  let [year, month, day] = strDate.split("/");
-  if (month.length === 1) {
-    month = `0${month}`;
-  }
-  if (day.length === 1) {
-    day = `0${day}`;
-  }
-  return `${year}/${month}/${day}`;
-}
-
-const published = toZeroPadDate(data.published);
 ---
 
 <li class="post">
@@ -32,7 +20,7 @@ const published = toZeroPadDate(data.published);
   </a>
   <p class="description">{data.description}</p>
   <p class="published">
-    {published}
+    {dayjs(data.published).format("YYYY/MM/DD")}
   </p>
   <ul class="tags">
     {

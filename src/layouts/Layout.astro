@@ -1,47 +1,55 @@
 ---
-interface Props {
-  title: string;
-}
-
+import { ViewTransitions } from "astro:transitions";
+import { SEO } from "astro-seo";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-
 import myIcon from "../assets/k-tecchan.png";
-const { title } = Astro.props;
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="ja">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href={myIcon.src} />
-    <title>{title}</title>
+    <SEO
+      charset="UTF-8"
+      title={title}
+      description={description}
+      extend={{
+        link: [{ rel: "icon", type: "image/png", href: myIcon.src }],
+        meta: [{ name: "generator", content: Astro.generator }],
+      }}
+    />
+    <ViewTransitions />
   </head>
   <body>
     <Header />
     <slot />
     <Footer />
+    <style is:global>
+      :root {
+        --type-color: #d8d8d8;
+        --background-color: #232323;
+        --main-color: #06cdf4;
+        --darker-main: #059ab7;
+      }
+
+      html {
+        font-family: system-ui, sans-serif;
+        color: var(--type-color);
+        background: var(--background-color);
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+    </style>
   </body>
 </html>
-
-<style is:global>
-  :root {
-    --type-color: #d8d8d8;
-    --background-color: #232323;
-    --main-color: #06cdf4;
-    --darker-main: #059ab7;
-  }
-
-  html {
-    font-family: system-ui, sans-serif;
-    color: var(--type-color);
-    background: var(--background-color);
-  }
-
-  body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-</style>

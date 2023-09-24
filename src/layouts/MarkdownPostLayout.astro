@@ -1,4 +1,8 @@
 ---
+import dayjs from "dayjs";
+import Layout from "./Layout.astro";
+import "../styles/prism.css";
+
 interface Props {
   frontmatter: {
     title: string;
@@ -9,15 +13,10 @@ interface Props {
   };
 }
 
-import Layout from "./Layout.astro";
-import { toZeroPadDate } from "../components/Card.astro";
-import "../styles/prism.css";
-
 const { frontmatter } = Astro.props;
-const published = toZeroPadDate(frontmatter.published);
 ---
 
-<Layout title={frontmatter.title}>
+<Layout title={frontmatter.title} description={frontmatter.description}>
   <main class="line-numbers">
     <h2 class="post-title">{frontmatter.title}</h2>
     <ul class="tags">
@@ -30,7 +29,7 @@ const published = toZeroPadDate(frontmatter.published);
       }
     </ul>
     <div class="published">
-      {published}
+      {dayjs(frontmatter.published).format("YYYY/MM/DD")}
     </div>
     <section>
       <slot />

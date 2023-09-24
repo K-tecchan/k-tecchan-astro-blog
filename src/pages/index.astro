@@ -1,13 +1,12 @@
 ---
-import Layout from "../layouts/Layout.astro";
-
 import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
 import myIcon from "../assets/k-tecchan.png";
 
 const title = "KameWalk";
 ---
 
-<Layout title={title}>
+<Layout {title}>
   <main>
     <section>
       <div class="my-face">
@@ -15,7 +14,8 @@ const title = "KameWalk";
       </div>
       <h2>K-tecchan</h2>
       <p class="my-description">
-        2023年から働き始めてます。<br>
+        2023年から働き始めてます。
+        <br />
         立派な社会の歯車になれるよう頑張ります。
       </p>
       <section class="sns">

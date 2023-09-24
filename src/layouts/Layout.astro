@@ -22,7 +22,10 @@ const { title, description } = Astro.props;
       description={description}
       extend={{
         link: [{ rel: "icon", type: "image/png", href: myIcon.src }],
-        meta: [{ name: "generator", content: Astro.generator }],
+        meta: [
+          { name: "generator", content: Astro.generator },
+          { name: "viewport", content: "width=device-width,initial-scale=1" },
+        ],
       }}
     />
     <ViewTransitions />

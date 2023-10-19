@@ -78,14 +78,15 @@ const { frontmatter } = Astro.props;
       margin-top: 40px;
       border-bottom: 1px solid var(--darker-main);
     }
+  }
 
-    & code {
-      color: hsla(250, 14%, 80%, 1);
-      font-family: "Fira Code", "Fira Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-      background-color: #ffffff16;
-      padding: 2px 5px;
-      margin: 0 5px;
-      border-radius: 5px;
-    }
+  p > code {
+    color: hsla(250, 14%, 80%, 1);
+    font-family: "Fira Code", "Fira Mono", Menlo, Consolas, "DejaVu Sans Mono",
+      monospace;
+    background-color: #ffffff16;
+    padding: 2px 5px;
+    margin: 0 5px;
+    border-radius: 5px;
   }
 </style>

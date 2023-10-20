@@ -1,0 +1,84 @@
+---
+title: 非nullアサーションでTypeScriptの配列の型情報からundefinedを取り除く
+published: 2023-10-20
+description: 配列からundefined除いたのに型情報にはundefined残るので、あれをなんとかします。実用性は微妙だと思います。
+tags: [typescript]
+---
+
+配列からundefinedを取り除きたい、みたいなことありますよね？僕は仕事中に実際にありました。
+
+```ts
+const items = ["item1", undefined, "item2"];
+const filteredItems = items.filter((item) => !!item);
+console.log(filteredItems);
+// └──> 中身は["item1", "item2"], 型は(string | undefind)[]のまま
+```
+
+上のようにやると、要素的にはundefinedが取り除かれてますが、型情報にはundefinedが残ってしまいます。
+
+この挙動について、はるか昔の時点で[GitHubのIssue][1]で話題にあがっているようで（こちらはnullを例に挙げてますが）、TypeScriptユーザーからは一刻も早いアプデが望まれているようです。残念ながら2023年10月においてもこの挙動は残っているのですが、これだと困ることがあるので色々と対処法があるようです。
+
+### 型ガードを使う
+
+```ts
+const items = ["item1", undefined, "item2"];
+const filteredItems = items.filter((item): item is string => !!item);
+console.log(filteredItems);
+// └──> 中身は["item1", "item2"], 型もstring[]
+```
+
+ググると一番よく見るのがこれじゃないかなと思います。先述のissueでもこちらがおススメされていました。
+矢印の前にそんなに文字書く？みたいに思って、個人的には見た目があんまり好きになれません。
+
+### asを使う
+
+```ts
+const items = ["item1", undefined, "item2"];
+const filteredItems = items.filter((item) => !!item) as string[];
+console.log(filteredItems);
+// └──> 中身は["item1", "item2"], 型もstring[]
+```
+
+うーーむ……。これもあんまり好きになれないんですよね。力こそパワーって感じで強引な感じがします。
+
+### 非nullアサーションを使う
+
+```ts
+const items = ["item1", undefined, "item2"];
+const filteredItems = items.filter((item) => !!item).map((item) => item!);
+console.log(filteredItems);
+// └──> 中身は["item1", "item2"], 型もstring[]
+```
+
+どうですか？なんかスマートじゃないですか？
+
+非nullアサーションは型情報からnullとundefinedを取り除いてくれるというものです。
+僕は「初めてのTypeScript」を読んで存在を知ったんですけど、配列の型からこうやってundefinedを取り除いてるのがググっても見当たらなかったんですよね。
+
+ただしこれ、見た目はスマート（個人の感想です）でもJavaScriptにコンパイルしたときに`map((item) => item)`が残ります。
+つまり、無駄にループさせるので実用性は微妙の一言に尽きると思います。
+
+また、非nullアサーションだけを使うと、型は`string[]`なのに中身は何も変わっていないというややこしい事態を引き起こしてしまいます。
+
+```ts
+const items = ["item1", undefined, "item2"];
+const filteredItems = items.map((item) => item!);
+console.log(filteredItems);
+// └──> 中身は["item1", undefined, "item2"], 型はstring[]
+```
+
+これらのことから、非nullアサーションは`as`の親戚なのかもしれないと気づきました。
+`as`が型アサーションなんだから早々に気づいてもよさそうなものですが、察しの悪さを発揮してしまいました。
+
+ググっても見当たらなかったのは、みんなこれらの情報を知ってたってことなんでしょうか。
+大人しく型ガード使います。
+
+### 参考
+
+- [Infer type guard => array.filter(x => !!x) should refine Array\<T\|null\> to Array\<T> · Issue #16069 · microsoft/TypeScript][1]
+- [TypeScript: string | undefinedな配列からundefinedを取り除く処理の型付けをしっかりする方法][2]
+- [as を使わずに配列から undefined を 型安全に取り除く][3]
+
+[1]: https://github.com/Microsoft/TypeScript/issues/16069
+[2]: https://qiita.com/suin/items/cda9af4f4f1c53c05c6f
+[3]: https://www.gaji.jp/blog/2022/03/30/9393/

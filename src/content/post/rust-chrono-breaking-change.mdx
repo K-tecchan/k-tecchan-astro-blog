@@ -1,0 +1,53 @@
+---
+title: Rustのライブラリchronoで破壊的変更があったので困った話
+published: 2023-11-19
+description: 「プログラミングRust」のサンプルコード動かしてたらライブラリの破壊的変更でつまづいた
+tags: [rust]
+---
+
+最近Rustの勉強でもしようかなと突然思い立ったので、ちょこちょこ勉強してます。
+[Tour of Rust][1]だったりZennで公開されている[Rust入門][2]を読んで、基本的な文法はなんとなく頭に入ったかなというレベルになったので[プログラミングRust 第2版][3]を読みはじめました。
+
+とりあえずサンプルコードとか動かしつつ読み進めてると、2章でエラーが出て動かないコードに遭遇しました。自分のコードがおかしいのかと思って書籍のコードをコピペしたんですが動かなかったので、これはおかしいなと調べたところ、どうやら2章で利用するライブラリで破壊的変更があったらしいです。
+
+変更があったのは[chrono][4]という日付や時刻などを扱うライブラリで、0.4.30で破壊的な変更が行われています。この変更は[GitHubのissue][5]で報告されており、依存していたtimeモジュールの脆弱性の影響を防ぐために行われたようです。前述のissueの中でも触れられていますが、timeモジュールは紆余曲折あったっぽいです。
+
+肝心のサンプルコードの動かし方ですが、chronoのバージョン0.4.30で破壊的変更が入ったので、0.4.29に固定してあげればいいです。なので、`Cargo.toml`を
+
+```
+[dependencies]
+actix-web = "1.0.0"
+serde = { version = "1.0", features = ["derive"] }
+```
+
+こちらから以下のように変更します。
+
+```
+[dependencies]
+actix-web = "1.0.0"
+chrono = { version = "= 0.4.29" }
+serde = { version = "1.0", features = ["derive"] }
+```
+
+actix-webがchronoを内部で利用していて、上記のように書き加えないとchronoのバージョンで0.4.31とかを使用してしまいます。
+[actix-webのissue][6]や[プログラミングRustのissue][7]でも上記のように修正してねという感じで言われています。
+
+Rustは後方互換性に対してかなり厳格らしいので、バージョン変更で今回のようなことが起こることはあまりないと思いますが、良い経験になりました。
+
+### 参考
+
+- [Tour of Rust - Let's go on an adventure!][1]
+- [Rust入門 - Zenn][2]
+- [プログラミングRust 第2版][3]
+- [chronotope/chrono: Date and time library for Rust][4]
+- [Feedback on swapping out the chrono::Duration type · Issue #1268 · chronotope/chrono][5]
+- [Chrono change to v0.4.30 breaks the build of actix-http-1.0.1 · Issue #3135 · actix/actix-web][6]
+- [Serving Pages to the Web in CH2 - 2nd ed · Issue #32 · ProgrammingRust/examples][7]
+
+[1]: https://tourofrust.com/
+[2]: https://zenn.dev/mebiusbox/books/22d4c1ed9b0003
+[3]: https://www.oreilly.co.jp/books/9784873119786/
+[4]: https://github.com/chronotope/chrono
+[5]: https://github.com/chronotope/chrono/issues/1268
+[6]: https://github.com/actix/actix-web/issues/3135
+[7]: https://github.com/ProgrammingRust/examples/issues/32

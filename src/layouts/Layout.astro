@@ -10,6 +10,9 @@ interface Props {
   description?: string;
 }
 
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const socialImageURL = new URL(myIcon.src, Astro.url);
+
 const { title, description } = Astro.props;
 ---
 
@@ -29,7 +32,11 @@ const { title, description } = Astro.props;
           { name: "generator", content: Astro.generator },
           { name: "viewport", content: "width=device-width,initial-scale=1" },
           { name: "twitter:card", content: "summary" },
-          { property: "og:image", content: myIcon.src },
+          { name: "twitter:site", content: "__k_tecchan" },
+          { property: "og:title", content: title },
+          { property: "og:description", content: description },
+          { property: "og:url", content: canonicalURL.href },
+          { property: "og:image", content: socialImageURL.href },
         ],
       }}
     />

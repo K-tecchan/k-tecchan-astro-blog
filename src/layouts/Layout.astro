@@ -28,6 +28,8 @@ const { title, description } = Astro.props;
         meta: [
           { name: "generator", content: Astro.generator },
           { name: "viewport", content: "width=device-width,initial-scale=1" },
+          { name: "twitter:card", content: "summary" },
+          { property: "og:image", content: myIcon.src },
         ],
       }}
     />

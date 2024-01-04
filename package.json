@@ -7,7 +7,9 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "vrt": "npm run build && playwright test",
+    "update-snapshot": "npm run build && playwright test --update-snapshots"
   },
   "dependencies": {
     "@astrojs/mdx": "^1.0.0",
@@ -17,6 +19,8 @@
     "dayjs": "^1.11.10"
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.1",
+    "@types/node": "^20.10.6",
     "prettier": "^3.0.3",
     "prettier-plugin-astro": "^0.12.0"
   }

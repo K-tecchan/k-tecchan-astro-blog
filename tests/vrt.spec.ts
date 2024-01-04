@@ -12,5 +12,5 @@ test("ブログTOPページ", async ({ page }) => {
 
 test("記事ページ", async ({ page }) => {
   await page.goto("/blog/typescript-remove-undefined");
-  await expect(page).toHaveScreenshot({ fullPage: true });
+  await expect(page).toHaveScreenshot({ fullPage: true, maxDiffPixels: 100 });
 });

@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "e2e": "npm run build && playwright test",
+    "vrt": "npm run build && playwright test",
     "update-snapshot": "npm run build && playwright test --update-snapshots"
   },
   "dependencies": {

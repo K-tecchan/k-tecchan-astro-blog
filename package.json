@@ -12,9 +12,9 @@
     "update-snapshot": "npm run build && playwright test --update-snapshots"
   },
   "dependencies": {
-    "@astrojs/mdx": "^1.0.0",
-    "@astrojs/sitemap": "^3.0.1",
-    "astro": "^3.0.3",
+    "@astrojs/mdx": "^2.0.3",
+    "@astrojs/sitemap": "^3.0.4",
+    "astro": "^4.0.9",
     "astro-seo": "^0.8.0",
     "dayjs": "^1.11.10"
   },

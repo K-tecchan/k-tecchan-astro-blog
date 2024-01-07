@@ -1,6 +1,4 @@
 ---
-import dayjs from "dayjs";
-
 interface Props {
   slug: string;
   data: {
@@ -20,7 +18,13 @@ const { slug, data } = Astro.props;
   </a>
   <p class="description">{data.description}</p>
   <p class="published">
-    {dayjs(data.published).format("YYYY/MM/DD")}
+    {
+      new Intl.DateTimeFormat("ja-JP", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(data.published)
+    }
   </p>
   <ul class="tags">
     {

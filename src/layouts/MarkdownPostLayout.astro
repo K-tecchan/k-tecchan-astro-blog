@@ -1,5 +1,4 @@
 ---
-import dayjs from "dayjs";
 import Layout from "./Layout.astro";
 import "../styles/prism.css";
 
@@ -29,7 +28,13 @@ const { frontmatter } = Astro.props;
       }
     </ul>
     <div class="published">
-      {dayjs(frontmatter.published).format("YYYY/MM/DD")}
+      {
+        new Intl.DateTimeFormat("ja-JP", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(frontmatter.published)
+      }
     </div>
     <section>
       <slot />

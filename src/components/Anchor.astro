@@ -1,7 +1,19 @@
 ---
-const props = Astro.props;
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
 ---
 
-<a {...props} target="_blank" rel="noopener noreferrer">
-  <slot />
-</a>
+{
+  href.startsWith("https://kamewalk.com") ? (
+    <a href={href}>
+      <slot />
+    </a>
+  ) : (
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      <slot />
+    </a>
+  )
+}

@@ -1,0 +1,15 @@
+{
+  "plugins": {
+    "@textlint/markdown": {
+      "extensions": [".mdx"]
+    }
+  },
+  "rules": {
+    "preset-ja-spacing": {
+      "ja-no-space-between-full-width": false,
+      "ja-space-between-half-and-full-width": {
+        "space": "always"
+      }
+    }
+  }
+}

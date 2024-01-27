@@ -1,4 +1,5 @@
 {
+  "textlint.autoFixOnSave": true,
   "files.associations": {
     "*.mdx": "markdown"
   },

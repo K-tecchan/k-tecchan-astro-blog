@@ -9,7 +9,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "vrt": "npm run build && playwright test",
-    "update-snapshot": "npm run build && playwright test --update-snapshots"
+    "update-snapshot": "npm run build && playwright test --update-snapshots",
+    "lint": "textlint \"./src/content/**/*.mdx\" -f pretty-error",
+    "fix": "textlint \"./src/content/**/*.mdx\" --fix"
   },
   "dependencies": {
     "@astrojs/mdx": "^2.0.3",
@@ -21,6 +23,8 @@
     "@playwright/test": "^1.40.1",
     "@types/node": "^20.10.6",
     "prettier": "^3.0.3",
-    "prettier-plugin-astro": "^0.12.0"
+    "prettier-plugin-astro": "^0.12.0",
+    "textlint": "^13.4.1",
+    "textlint-rule-preset-ja-spacing": "^2.3.0"
   }
 }

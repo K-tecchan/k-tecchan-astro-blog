@@ -21,7 +21,7 @@ export const components = { a: Anchor };
 [Astro のこちらのページ][1]に書かれていますが、カスタムコンポーネントを目的のタグに割り当てればいいだけです。
 今回の場合はとりあえず以下のようなコンポーネントを作成します。
 
-```jsx
+```astro
 ---
 interface Props {
   href: string;
@@ -38,7 +38,7 @@ const { href } = Astro.props;
 このコンポーネントを mdx ファイルにインポートして`a`タグに割り当てます。
 コンポーネント名やファイルパスは適当なので自分の場合に置き換えてください。
 
-```jsx
+```mdx
 ---
 ---
 
@@ -52,7 +52,7 @@ export const components = { a: Anchor };
 
 僕の場合は自分のブログ内のリンクは同じタブで開きたかったので、コンポーネントファイルで以下のように条件分岐させています。
 
-```jsx
+```astro
 ---
 interface Props {
   href: string;

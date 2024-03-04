@@ -1,6 +1,5 @@
 ---
 import Layout from "./Layout.astro";
-import "../styles/prism.css";
 
 interface Props {
   frontmatter: {
@@ -39,9 +38,6 @@ const { frontmatter } = Astro.props;
     <section>
       <slot />
     </section>
-    <script>
-      import "../scripts/prism";
-    </script>
   </main>
 </Layout>
 

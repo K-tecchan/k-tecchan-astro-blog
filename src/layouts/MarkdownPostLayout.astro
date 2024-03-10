@@ -23,7 +23,7 @@ const { frontmatter, id } = Astro.props;
 
 <Layout title={frontmatter.title} description={frontmatter.description}>
   <main>
-    <h2 class="post-title">{frontmatter.title}</h2>
+    <h1 class="post-title">{frontmatter.title}</h1>
     <ul class="tags">
       {
         frontmatter.tags.map((tag) => (

@@ -18,7 +18,7 @@ console.log(filteredItems);
 
 この挙動について、はるか昔の時点で [GitHubのIssue][1] で話題にあがっているようで（こちらは null を例に挙げてますが）、TypeScript ユーザーからは一刻も早いアプデが望まれているようです。残念ながら 2023 年 10 月においてもこの挙動は残っているのですが、これだと困ることがあるので色々と対処法があるようです。
 
-### 型ガードを使う
+## 型ガードを使う
 
 ```ts
 const items = ["item1", undefined, "item2"];
@@ -30,7 +30,7 @@ console.log(filteredItems);
 ググると一番よく見るのがこれじゃないかなと思います。先述の issue でもこちらがおススメされていました。
 矢印の前にそんなに文字書く？みたいに思って、個人的には見た目があんまり好きになれません。
 
-### asを使う
+## asを使う
 
 ```ts
 const items = ["item1", undefined, "item2"];
@@ -41,7 +41,7 @@ console.log(filteredItems);
 
 うーーむ……。これもあんまり好きになれないんですよね。力こそパワーって感じで強引な感じがします。
 
-### 非nullアサーションを使う
+## 非nullアサーションを使う
 
 ```ts
 const items = ["item1", undefined, "item2"];
@@ -73,7 +73,7 @@ console.log(filteredItems);
 ググっても見当たらなかったのは、みんなこれらの情報を知ってたってことなんでしょうか。
 大人しく型ガード使います。
 
-### 参考
+## 参考
 
 - [Infer type guard => array.filter(x => !!x) should refine Array\<T\|null\> to Array\<T> · Issue #16069 · microsoft/TypeScript][1]
 - [TypeScript: string | undefinedな配列からundefinedを取り除く処理の型付けをしっかりする方法][2]

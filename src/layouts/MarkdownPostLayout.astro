@@ -1,7 +1,12 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "./Layout.astro";
+import pencil from "../assets/pencil.svg";
+import update from "../assets/update.svg";
+import github from "../assets/github.svg";
 
 interface Props {
+  id: string;
   frontmatter: {
     title: string;
     description: string;
@@ -11,11 +16,13 @@ interface Props {
   };
 }
 
-const { frontmatter } = Astro.props;
+const baseUrl =
+  "https://github.com/K-tecchan/k-tecchan-astro-blog/blob/main/src/content/post/";
+const { frontmatter, id } = Astro.props;
 ---
 
 <Layout title={frontmatter.title} description={frontmatter.description}>
-  <main class="line-numbers">
+  <main>
     <h2 class="post-title">{frontmatter.title}</h2>
     <ul class="tags">
       {
@@ -26,14 +33,40 @@ const { frontmatter } = Astro.props;
         ))
       }
     </ul>
-    <div class="published">
-      {
-        new Intl.DateTimeFormat("ja-JP", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }).format(frontmatter.published)
-      }
+    <div class="meta">
+      <ul class="date">
+        <li class="published">
+          <div>
+            <Image src={pencil} alt="Published" width="20" height="20" />
+          </div>
+          {
+            new Intl.DateTimeFormat("ja-JP", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            }).format(frontmatter.published)
+          }
+        </li>
+        {
+          frontmatter.updated && (
+            <li class="updated">
+              <div>
+                <Image src={update} alt="Updated" width="20" height="20" />
+              </div>
+              {new Intl.DateTimeFormat("ja-JP", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              }).format(frontmatter.updated)}
+            </li>
+          )
+        }
+      </ul>
+      <div>
+        <a href={baseUrl + id} target="_blank" rel="noopener noreferrer">
+          <Image src={github} alt="GitHub" width="25" height="25" />
+        </a>
+      </div>
     </div>
     <section>
       <slot />
@@ -64,6 +97,26 @@ const { frontmatter } = Astro.props;
         & a {
           text-decoration: none;
         }
+      }
+    }
+
+    & .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    & .date {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      & .updated,
+      & .published {
+        display: flex;
+        gap: 5px;
       }
     }
 

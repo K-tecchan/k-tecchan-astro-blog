@@ -21,6 +21,6 @@ const { post } = Astro.props;
 const { Content } = await post.render();
 ---
 
-<MarkdownPostLayout frontmatter={post.data}>
+<MarkdownPostLayout frontmatter={post.data} id={post.id}>
   <Content />
 </MarkdownPostLayout>

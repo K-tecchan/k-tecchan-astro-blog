@@ -8,7 +8,6 @@ export default defineConfig({
   site: "https://kamewalk.com",
   redirects: {
     '/blog/': '/blog/1/',
-    '/[tag]/[page]': '/tag/[tag]/[page]'
   },
   integrations: [expressiveCode({
     themes: ['dracula'],

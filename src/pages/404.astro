@@ -13,7 +13,7 @@ const description = "指定したページは見つかりませんでした";
       <div class="my-face">
         <Image src={myGriefIcon} alt="k-tecchanの自画像" loading={"eager"} />
       </div>
-      <h1>指定したページは見つかりませんでした</h1>
+      <p class="message">指定したページは見つかりませんでした。</p>
       <div class="sign">
         <a href="/blog/1">go to blog</a>
       </div>
@@ -36,6 +36,10 @@ const description = "指定したページは見つかりませんでした";
       width: 100%;
       height: auto;
     }
+  }
+
+  .message {
+    font-size: 1.4em;
   }
 
   .sign {

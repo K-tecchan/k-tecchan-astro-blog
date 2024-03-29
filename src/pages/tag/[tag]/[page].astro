@@ -3,8 +3,8 @@ import type { GetStaticPaths, Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import Layout from "../../../layouts/Layout.astro";
-import Card from "../../../components/Card.astro";
-import Pagination from "../../../components/Pagination.astro";
+import Pagination from "@components/Pagination.astro";
+import Posts from "@components/Posts.astro";
 import { slugNameMapper, type SlugType } from "src/lib/slugNameMapper";
 
 interface Props {
@@ -35,9 +35,7 @@ const { page } = Astro.props;
 <Layout title={"KameWalk / #" + (tag as string) + "-" + page.currentPage}>
   <main>
     <h1>#{slugNameMapper[tag as SlugType]} がついた記事</h1>
-    <ul>
-      {page.data.map(({ data, slug }) => <Card {data} {slug} />)}
-    </ul>
+    <Posts posts={page.data} />
   </main>
   <Pagination {page} />
 </Layout>
@@ -53,9 +51,5 @@ const { page } = Astro.props;
 
   h1 {
     font-size: 1.5em;
-  }
-
-  ul {
-    padding: 0;
   }
 </style>

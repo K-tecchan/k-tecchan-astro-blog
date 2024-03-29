@@ -1,0 +1,70 @@
+---
+title: JavaScript の Array() と new Array() は何が違うのか
+published: 2024-03-29
+description: JavaScript で Array() と new Array() の違いが気になったので調べました。同じらしいです。
+tags: [javascript]
+---
+
+import Anchor from "@components/Anchor.astro";
+export const components = { a: Anchor };
+
+基本的にはリテラルを使うと思いますが、中身はともかく長さが 10 の配列を作りたいときに以下のどちらかを使うなんてことも稀によくあるかと思います。
+
+```js
+const arr = Array(10);
+const arr2 = new Array(10);
+```
+
+なにか違うのかなと思って調べたところ、結局`Array()`と`new Array()`とは同じみたいです。しいて言えば関数として呼び出すか、コンストラクタとして呼び出すかが違います。
+[ECMAScript の仕様書][1]に以下のようにあります。
+
+> also creates and initializes a new Array when called as a function rather than as a constructor. Thus the function call Array(…) is equivalent to the object creation expression new Array(…) with the same arguments.
+
+どちらも等価であると仕様書が直々に言ってくれているので、どちらを使うかは好みで選んで良さそうです。個人的には`Array()`の方が短く書けるので好きです。
+
+少しわき道に逸れるのですが、これらを使って配列を作成する際に注意するべき例外パターンがあることも今回知りました。
+そのパターンというのは一つの引数かつ、その引数が整数でない数値の場合や、0~2<sup>32</sup>-1 の範囲外の整数の場合です。
+具体的には以下のようなパターンでは`RangeError`が発生します。
+
+```js
+Array(1.1); // RangeError: Invalid array length
+Array(-1); // RangeError: Invalid array length
+Array(2**32); // RangeError: Invalid array length
+Array(Number.MAX_SAFE_INTEGER); // RangeError: Invalid array length
+```
+
+小数や負の数についてはわかりますが、2<sup>32</sup>-1 より大きい整数については初耳でした。
+普通に使っている分には気にすることではなく、知ったところでという感じではあるのですが、一つ引き出しが増えた気がします。
+
+これは配列の[`length`プロパティが符号なし 32 ビット整数][2]であることに起因していそうです。
+
+リテラルでも試してみました。
+
+```js
+const arr = [];
+for (let i = 0; i < 2**32; i++) {
+  arr.push(i);
+}
+```
+
+こちらをブラウザ上で実行してみたところ、やはり`RangeError`が発生しました。
+ループの回数を少し減らしてみても同様の結果になりました（2\**26 は OK で、2**27 はダメでした。環境によって違うのかもしれないです）。
+
+当然、何回目でエラーが発生しているか気になり以下のようにコードを修正して実行してみました。
+すると最初は順調に数字が出力されていたのですが、しばらくしてパソコンのファンが唸りだしブラウザが固まったので断念しました。そのため、答えは闇の中です。
+
+```js ins={4}
+const arr = [];
+for (let i = 0; i < 2**32; i++) {
+  arr.push(i);
+  console.log(i)
+}
+```
+
+## 参考
+
+- [ECMAScript® 2025 Language Specification][1]
+- [Array.length - JavaScript | MDN][2]
+
+[1]: https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array-constructor
+[2]: https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/length

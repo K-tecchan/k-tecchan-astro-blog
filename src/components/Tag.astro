@@ -1,0 +1,28 @@
+---
+import { slugNameMapper, type SlugType } from "src/lib/slugNameMapper";
+
+interface Props {
+  tag: string;
+}
+
+const { tag } = Astro.props;
+
+if (!(tag in slugNameMapper) && !tag.endsWith("xxx")) {
+  throw new Error(`"${tag}" not found in slugNameMapper`);
+}
+---
+
+<li class="tag">
+  #<a href={`/tag/${tag}/1`}>{slugNameMapper[tag as SlugType]}</a>
+</li>
+
+<style>
+  .tag {
+    list-style-type: none;
+  }
+
+  a {
+    color: var(--main-color);
+    text-decoration: none;
+  }
+</style>

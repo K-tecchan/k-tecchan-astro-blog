@@ -1,8 +1,9 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "./Layout.astro";
-import update from "../assets/update.svg";
-import github from "../assets/github.svg";
+import Tags from "@components/Tags.astro";
+import Dates from "@components/Dates.astro";
+import githubIcon from "@assets/github.svg";
 
 interface Props {
   id: string;
@@ -23,47 +24,15 @@ const { frontmatter, id } = Astro.props;
 <Layout title={frontmatter.title} description={frontmatter.description}>
   <main>
     <h1 class="post-title">{frontmatter.title}</h1>
-    <ul class="tags">
-      {
-        frontmatter.tags.map((tag) => (
-          <li class="tag">
-            #<a href={`/tag/${tag}/1`}>{tag}</a>
-          </li>
-        ))
-      }
-    </ul>
     <div class="meta">
-      <ul class="date">
-        <li class="published">
-          {
-            new Intl.DateTimeFormat("ja-JP", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            }).format(frontmatter.published)
-          }
-        </li>
-        {
-          frontmatter.updated && (
-            <li class="updated">
-              <div>
-                <Image src={update} alt="Updated" width="20" height="20" />
-              </div>
-              {new Intl.DateTimeFormat("ja-JP", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              }).format(frontmatter.updated)}
-            </li>
-          )
-        }
-      </ul>
-      <div>
+      <Dates dates={frontmatter} />
+      <span>
         <a href={baseUrl + id} target="_blank" rel="noopener noreferrer">
-          <Image src={github} alt="GitHub" width="25" height="25" />
+          <Image src={githubIcon} alt="GitHub" width="25" height="25" />
         </a>
-      </div>
+      </span>
     </div>
+    <Tags tags={frontmatter.tags} />
     <section>
       <slot />
     </section>
@@ -82,42 +51,10 @@ const { frontmatter, id } = Astro.props;
       font-size: 1.7em;
     }
 
-    & .tags {
-      display: flex;
-      gap: 10px;
-      padding: 0;
-
-      & .tag {
-        list-style-type: none;
-
-        & a {
-          text-decoration: none;
-        }
-      }
-    }
-
     & .meta {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
-    }
-
-    & .date {
-      display: flex;
-      gap: 20px;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-
-      & .updated,
-      & .published {
-        display: flex;
-        gap: 5px;
-      }
-    }
-
-    & a {
-      color: var(--main-color);
+      align-items: center;
     }
   }
 
@@ -129,6 +66,10 @@ const { frontmatter, id } = Astro.props;
       font-size: 1.4em;
       margin-top: 40px;
       border-bottom: 1px solid var(--darker-main);
+    }
+
+    & a {
+      color: var(--main-color);
     }
   }
 

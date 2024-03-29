@@ -1,0 +1,53 @@
+---
+import { Image } from "astro:assets";
+import updateIcon from "@assets/update.svg";
+
+interface Props {
+  dates: {
+    published: Date;
+    updated?: Date;
+  };
+}
+
+const { dates } = Astro.props;
+---
+
+<ul class="dates">
+  <li class="published">
+    {
+      new Intl.DateTimeFormat("ja-JP", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(dates.published)
+    }
+  </li>
+  {
+    dates.updated && (
+      <li class="updated">
+        <Image src={updateIcon} alt="Updated" width="20" height="20" />
+        {new Intl.DateTimeFormat("ja-JP", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(dates.updated)}
+      </li>
+    )
+  }
+</ul>
+
+<style>
+  .dates {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 16px 0;
+  }
+
+  .updated,
+  .published {
+    display: flex;
+    gap: 5px;
+  }
+</style>

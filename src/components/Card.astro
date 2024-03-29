@@ -1,10 +1,14 @@
 ---
+import Dates from "./Dates.astro";
+import Tags from "./Tags.astro";
+
 interface Props {
   slug: string;
   data: {
     title: string;
     description: string;
     published: Date;
+    updated?: Date;
     tags: string[];
   };
 }
@@ -17,32 +21,13 @@ const { slug, data } = Astro.props;
     {data.title}
   </a>
   <p class="description">{data.description}</p>
-  <p class="published">
-    {
-      new Intl.DateTimeFormat("ja-JP", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }).format(data.published)
-    }
-  </p>
-  <ul class="tags">
-    {
-      data.tags.map((tag) => (
-        <li class="tag">
-          #<a href={`/tag/${tag}/1`}>{tag}</a>
-        </li>
-      ))
-    }
-  </ul>
+  <Dates dates={data} />
+  <Tags tags={data.tags} />
 </li>
 
 <style>
-  li {
-    list-style-type: none;
-  }
-
   .post {
+    list-style-type: none;
     padding: 15px;
     margin-bottom: 30px;
     border: 1px solid var(--type-color);
@@ -50,27 +35,13 @@ const { slug, data } = Astro.props;
 
     & .title {
       font-size: 1.1em;
-    }
-
-    & .description {
-      height: calc(1.5em * 2);
-      line-height: 1.5;
-      display: -webkit-box;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-    }
-
-    & a {
       color: var(--main-color);
       text-decoration: none;
     }
-  }
 
-  .tags {
-    padding: 0;
-    display: flex;
-    gap: 10px;
+    & .description {
+      line-height: 1.5;
+      text-align: justify;
+    }
   }
 </style>

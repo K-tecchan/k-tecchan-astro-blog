@@ -30,11 +30,13 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { tag } = Astro.params;
 const { page } = Astro.props;
+
+const tagName = slugNameMapper[tag as SlugType];
 ---
 
-<Layout title={"KameWalk / #" + (tag as string) + "-" + page.currentPage}>
+<Layout title={`KameWalk / #${tagName}-${page.currentPage}`}>
   <main>
-    <h1>#{slugNameMapper[tag as SlugType]} がついた記事</h1>
+    <h1>#{tagName} がついた記事</h1>
     <Posts posts={page.data} />
   </main>
   <Pagination {page} />

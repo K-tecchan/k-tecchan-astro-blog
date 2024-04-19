@@ -1,0 +1,314 @@
+---
+title: Vitest を使ってみる
+published: 2024-04-20
+description: 最近（半年くらい前） v1.0.0 が公開されたテストランナー Vitest を使ってみました。ヴィーテストなんだろうけどヴァイテストって読みたくなりますよね。
+tags: [test, vitest]
+---
+
+import Anchor from '@components/Anchor.astro'
+export const components = { a: Anchor }
+
+import ImageWrapper from "@components/ImageWrapper.astro";
+import coverageV8NotInstalled from "@assets/20240420-try-vitest/vitest-coverage-package-not-installed.png"
+import coverageV8 from "@assets/20240420-try-vitest/vitest-coverage-v8.png"
+import coverageIstanbul from "@assets/20240420-try-vitest/vitest-coverage-istanbul.png"
+import uiTop from "@assets/20240420-try-vitest/vitest-ui-top.png"
+import uiDetail from "@assets/20240420-try-vitest/vitest-ui-detail.png"
+import moduleGraph1 from "@assets/20240420-try-vitest/module-graph1.png"
+import moduleGraph2 from "@assets/20240420-try-vitest/module-graph2.png"
+
+僕は JavaScript（TypeScript）のテストランナーとして Jest しか使ったことがなかったのですが、[Vitest][1] は Jest 互換の API をもっているので簡単に移行できるらしいです。
+Vitest は 2023 年の 12 月に v1.0.0 がリリースされているので、最近というにはやや出遅れ感は否めませんが気にしないことにします。
+最近は他にも Node.js にテストランナーが組み込まれたり、テスト一つとっても様々な選択肢が増えてきているような気がしていて良いですね。
+選択肢が少ないと悩むことも少なく済みますが、色々なものの中から各々の考える **"最強"** を探すのも楽しいですよね。
+
+最近は Rolldown がオープンソースになったり、Storybook の一部パッケージが [Vitest で置き換えられた][2]りと Vite 周辺がますます盛り上がってるような気がしてます。
+ちなみにまだ Vite まともに使ったことないです。
+
+## 環境作成
+
+Vitest は Vite を利用しないプロジェクトでも使えるようです。とは言っても Vite と併用するケースが多いと思うので、まずは Vite のプロジェクトを作成します。
+今回は Vitest を使ってみるのが目的なのでテンプレはどれでもいい気がしたのですが、僕は react や TypeScript を使うことが多いので react-swc-ts を選んでみました。
+
+以下 npm を例に進めるので yarn や pnpm など違うパッケージマネージャの場合は読み替えてください。
+
+```sh
+npm create vite@latest vitest-sample -- --template react-swc-ts
+```
+
+作成したプロジェクトに移動して Vitest や関連パッケージをインストールします。
+
+```sh
+cd vitest-sample
+npm install -D vitest
+```
+
+今回使ったリポジトリは↓にあります。
+
+https://github.com/K-tecchan/vitest-sample
+
+## テストしてみる
+
+とりあえず準備は完了したので早速テストしてみます。
+Jest でも Vitest でも挙げられている単純な足し算をする関数です。
+
+```ts title="src/sum.ts"
+export function add(a: number, b: number) {
+  return a + b;
+}
+```
+
+この関数をテストするためのテストファイルを作成します。
+Vitest では Jest と同様に *.test.ts や *.spec.ts のようなファイルがテストファイルとして扱われます。
+もちろん js や jsx, tsx でも同様です。
+
+```ts title="src/sum.spec.ts"
+import { expect, test } from 'vitest'
+import { sum } from './sum'
+
+test('adds 1 + 2 to equal 3', () => {
+  expect(sum(1, 2)).toBe(3); // Jest 互換の API
+})
+```
+
+Jest では expect などの API がグローバルに宣言されていますが、Vitest ではグローバルで有効になっていません。
+Jest 同様にしたい場合には設定ファイルで有効化しましょう。
+
+```ts title="vitest.config.ts"
+export default defineConfig({
+  test: {
+    globals: true
+  }
+})
+```
+
+以下の設定も追記しておきましょう。
+```jsonc title="tsconfig.json"
+{
+  "compilerOptions": {
+    "types": ["vitest/globals"]
+  }
+}
+```
+
+ちなみに Vitest は Chai 互換の API も持っているので、以下のように書くこともできるみたいです。
+Chai ユーザの方も安心して使えますね。
+
+```ts title="src/sum.spec.ts" ins={6} del={5}
+import { expect, test } from 'vitest'
+import { sum } from './sum'
+
+test('adds 1 + 2 to equal 3', () => {
+  expect(sum(1, 2)).toBe(3); // Jest 互換の API
+  expect(sum(1, 2)).to.equal(3); // Chai 互換の API
+})
+```
+
+package.json にスクリプトを追加して`npm run test`でテストを実行します。
+もしくは`npx vitest`でも実行できます。
+
+```json title="package.json"
+{
+  "scripts": {
+    "test": "vitest"
+  }
+}
+```
+
+Vitest はデフォルトで watch モードで実行されるので、ファイルを保存すると自動でテストが再実行されます。便利ですね。
+
+テストの書き心地はほぼ Jest といっても過言ではないので、本当に簡単に移行できそうです。
+[モックは jest ではなく vi を使う][3]などの細かい差はありますが、四捨五入したらほぼ同じといっていいでしょう。
+
+## カバレッジをとる
+
+Vitest でカバレッジを取得するためには、`--coverage`オプションをつけて実行します。
+
+```json title="package.json" ins={4}
+{
+  "scripts": {
+    "test": "vitest",
+    "test:coverage": "vitest --coverage"
+  }
+}
+```
+
+また、以下のように設定ファイルでカバレッジの取得を有効化すると`--coverage`をつけなくてもカバレッジを取得できます。
+このフラグを有効化しておくと、後述する UI モードでもカバレッジを確認できるので有効化しておくと良いと思います。
+
+```ts title="vitest.config.ts"
+export default defineConfig({
+  test: {
+    coverage: {
+      enabled: true
+    }
+  }
+})
+```
+
+スクリプトを実行した際に、カバレッジを取得するためのパッケージである`@vitest/coverage-v8`をインストールしていない場合には、画像のような選択肢が表示されます。
+
+<ImageWrapper
+  src={coverageV8NotInstalled}
+  alt="@vitest/coverage-v8 がインストールされていないとターミナルに選択肢が表示"
+  quality="high"
+  width="480"
+/>
+
+ここで`y`を選択すればインストールされます。
+その後、再度スクリプトを実行すると coverage フォルダが作成されテスト結果とともにカバレッジを確認できます。
+もちろん、事前にインストールしておいた方がスムーズに進むので、カバレッジなんて気にしないぜという場合以外には事前に入れておくとよいでしょう。
+
+<ImageWrapper
+  src={coverageV8}
+  alt="coverage-v8を利用したときのカバレッジ"
+  quality="high"
+  width="480"
+/>
+
+ちょっとした補足ですが、Vitest のカバレッジを取得するパッケージは`@vitest/coverage-v8`と`@vitest/coverage-istanbul`の 2 種類が用意されています。
+istanbul の方でもカバレッジを取得してみると、下の画像のように表示されます。
+特にコードは変更していないのですが、出力には差が出ていますね。
+どちらを使うか選ぶ際には、この違いを頭に留めておくと良いかもしれません。
+
+<ImageWrapper
+  src={coverageIstanbul}
+  alt="coverage-istanbulを利用したときのカバレッジ。v8と少し異なる"
+  quality="high"
+  width="480"
+/>
+
+## Vitest UI
+
+Vitest はブラウザ上でテスト結果など様々な情報を確認できます。
+便宜上 UI モードと呼びますが、テストに関するアレコレをほぼブラウザ上で完結できます。
+`npm i -D @vitest/ui`でパッケージをインストールして、`--ui`オプションをつけて実行すると UI モードで実行されます。
+
+```json title="package.json" ins={5}
+{
+  "scripts": {
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "test:ui": "vitest --ui"
+  }
+}
+```
+
+スクリプトを実行するとブラウザで下の画像のような画面が開きます。
+画像左上のほうにある緑で囲んだ部分がカバレッジ、水色で囲んだ部分がテスト実行ボタンです。
+
+<ImageWrapper
+  src={uiTop}
+  alt="vitest-uiのトップ画面"
+  quality="low"
+/>
+
+この画面中でファイル名をクリックすると、下の画像のような画面になりそれぞれのテストファイルについてさらに詳しく見ることができます。
+
+<ImageWrapper
+  src={uiDetail}
+  alt="ファイル名をクリックしたときの画面"
+  quality="low"
+  description="src/sum.spec.ts をクリックしたときの画面"
+/>
+
+表示されているタブの役割はおおまかに以下の通りです。
+
+- Report
+  - テスト結果を表示
+- Module Graph
+  - モジュールの依存関係を表示
+- Code
+  - テスト対象のコードをブラウザ上で編集してテストを実行可能
+- Console
+  - 仕込んだ console.log, console.error などの出力を表示
+
+中でも Module Graph と Code が便利です。
+
+Code では選択したテストファイルのコードを確認・編集して、テストを即座に実行することができます。
+がっつりテストを書くのはエディタで行ったほうが効率的ですが、ちょっとした修正ならパパっと済ませることが可能です。
+
+Module Graph は個人的にすごいなと思った機能で、モジュールの依存関係を確認できます。
+
+<ImageWrapper
+  src={moduleGraph1}
+  alt="Module Graph でのモジュールの依存関係の可視化。2個だと寂しい"
+  quality="high"
+/>
+
+見ての通り依存関係が可視化されてますが、これだとちょっとあまりにも寂しいので sum.ts に依存するモジュール sumsum.ts を追加してテストも書いてみます。
+
+```ts title='' ins={11, 17-20}
+// sumsum.ts
+import { sum } from './sum'
+
+export function sumsum(a: number, b: number) {
+  return sum(a, b) * 2;
+}
+
+// sum.spec.ts
+import { expect, test } from 'vitest'
+import { sum } from './sum'
+import { sumsum } from './sumsum'
+
+test('adds 1 + 2 to equal 3', () => {
+  expect(sum(1, 2)).toBe(3);
+})
+
+test('adds 1 + 2 twice to equal 6', () => {
+  expect(sumsum(1, 2)).toBe(6);
+})
+```
+
+きれいな正三角形ができました。ちょっとバミューダトライアングルっぽい。
+
+<ImageWrapper
+  src={moduleGraph2}
+  alt="Module Graph でのモジュールの依存関係の可視化。3個だとちょっとにぎやかになった気がする"
+  quality="high"
+/>
+
+この機能ですがテストのとき以外にも有用だと思っています。
+今回のような小さい例だとありがたみが薄いですが、大きなプロジェクトだと依存関係も複雑になるので、複雑な依存関係をパッと見てある程度把握できるとなると、ありがたみも一入になるのではないでしょうか。
+
+## In-Source Testing
+
+Vitest では実装と同じファイルにテストを書くことができます。
+Rust のテストと同じような感じですね。
+公式では [In-Source Testing][4] と呼んでいます。
+実装と同じファイルにテストを書くのは好みが分かれそうですが、テストと実装を行ったり来たりせずに済むのでよさそうです。
+
+```ts title="src/sum.ts" ins={5-10}
+export function sum(a: number, b: number) {
+  return a + b;
+}
+
+if (import.meta.vitest) {
+  const { test, expect } = import.meta.vitest;
+  test('adds 100 + 200 to equal 300', () => {
+    expect(sum(100, 200)).toBe(300);
+  })
+}
+```
+
+設定ファイルで`import.meta.vitest: 'undefined'`のように設定することで、テストコードが本番ビルドに含まれないようにできるので、心置きなく実装と同じファイルにテストを書けます。
+
+## まとめ
+
+少し触ってみただけですが、Jest とほぼ同じ API なこともありすぐに使い始めることができそうでした。
+スピードは測っていないのでなんともいえませんが、Jest より速い気がします。たぶん。
+
+かなり多機能なので、今回紹介した以上にたくさんの機能がありますが、まずは基本的な使い方を抑えておけば十分に使えると思います。
+この先は自分の目で確かめてください。
+
+## 参考
+
+- [Vitest | Next Generation testing framework][1]
+- [Storybook 8][2]
+- [VitestでMock, Testing Typesを使ってみよう！][3]
+- [In-Source Testing | Guide | Vitest][4]
+
+[1]: https://vitest.dev/
+[2]: https://storybook.js.org/blog/storybook-8/
+[3]: https://zenn.dev/bs_kansai/articles/21962b63727f27
+[4]: https://vitest.dev/guide/in-source.html

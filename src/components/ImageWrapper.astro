@@ -6,19 +6,20 @@ interface Props {
   alt: string;
   quality: string;
   description?: string;
+  width?: string;
 }
 
-const { src, alt, quality, description } = Astro.props;
+const { src, alt, quality, description, width } = Astro.props;
 ---
 
-<div>
+<div style={{maxWidth: '100%', width: `${width}px`}}>
   <Image {src} {alt} {quality} />
   {description && <p>{description}</p>}
 </div>
 
 <style>
   div {
-    width: 100%;
+    margin: 0 auto;
 
     & img {
       width: 100%;

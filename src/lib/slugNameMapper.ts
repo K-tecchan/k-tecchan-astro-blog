@@ -1,6 +1,6 @@
 // key = スラッグ、value = 表示名
 export const slugNameMapper = {
-  astro: "astro",
+  astro: "Astro",
   linux: "Linux",
   note: "note",
   book: "book",
@@ -10,6 +10,8 @@ export const slugNameMapper = {
   rust: "Rust",
   mdx: "mdx",
   network: "network",
+  test: "test",
+  vitest: "Vitest",
 } as const;
 
 export type SlugType = keyof typeof slugNameMapper;

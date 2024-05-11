@@ -1,0 +1,88 @@
+---
+title: よく使う Git コマンドメモ
+published: 2024-05-11
+description: 個人的にけっこう使うけど、オプションを忘れがちな Git コマンドのメモです。
+tags: [git]
+---
+
+import Anchor from '@components/Anchor.astro';
+export const components = { a: Anchor };
+
+## ブランチを作成して移動
+
+```sh
+git switch -c <branch-name>
+```
+
+`git checkout -b <branch-name>`でも同じことが出来ますが、`switch`の方が新しいので、こちらを使っています。
+`checkout`より`switch`のほうが入力しやすいという理由もあります。
+
+## ブランチの名前を変更
+
+```sh
+# 変更したいブランチにいるとき
+git branch -m <new-branch-name>
+# 変更したいブランチと異なるブランチにいるとき
+git branch -m <old-branch-name> <new-branch-name>
+```
+
+作業中のブランチ名を修正したいときが主なので、`git branch -m <new-branch-name>`を使うことが多いです。
+
+## ブランチを削除
+
+```sh
+git branch -D <branch-name1> <branch-name2> ...
+```
+
+いらなくなったブランチを削除するときに使います。
+`-D`オプションは強制削除です。
+`-d`だとマージされていないブランチを削除できず、「このブランチ消したかったら`-D`を使ってね」みたいなエラーが出るので、いつも`-D`を使います。
+
+最近知ったんですが、複数指定することでいらないブランチは一気に消せます。
+もうチマチマ消すのはやめましょう。
+
+## コミットの取り消し
+
+```sh
+git reset --soft HEAD^
+```
+
+直前のコミットを取り消すときに使います。
+[こちらの記事][1]などでもっと前のコミットを取り消す方法も紹介されていますが、なんか怖いのでやったことないです。
+
+## コミットを修正
+
+```sh
+git add <file>
+git commit --amend --no-edit
+```
+
+コミットメッセージはそのままで直前のコミットに追加し忘れたファイルや、追加の修正があるときに使います。
+例えば`fix typo`みたいなコミットをつくらずに済んで嬉しいです。
+リモートにプッシュしたあとにやると`git push -f`することになるので、プッシュしてしまったら大人しく`fix typo`します。
+
+コミットメッセージを修正したい場合は`git commit --amend -m <message>`で OK。
+
+## 変更にメッセージをつけて一時的に退避
+
+```sh
+git stash save -u <message>
+```
+
+作業中に急に別のブランチに移動したいときや、作業中の変更を一時的に退避したいときに使います。
+`-u`オプションをつけないと新規作成したファイルを退避できないので基本つけます。
+
+退避した変更を反映させるときは`git stash list`で確認してから以下のコマンドで反映させます。一番新しいものを反映させたい場合は`stash@{N}`いらないです。
+
+```sh
+git stash pop stash@{N}
+```
+
+## 参考
+
+- [Git - Reference](https://git-scm.com/docs)
+- [gitのローカルのブランチ名を変更したい #Git - Qiita][1]
+- [[git reset (--hard/--soft)]ワーキングツリー、インデックス、HEADを使いこなす方法 #Git - Qiita](https://qiita.com/shuntaro_tamura/items/db1aef9cf9d78db50ffe)
+- [色々な git stash #Git - Qiita](https://qiita.com/akasakas/items/768c0b563b96f8a9be9d)
+
+[1]: https://qiita.com/suin/items/96c110b218d919168d64

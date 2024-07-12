@@ -11,9 +11,11 @@ interface Props {
 }
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const allPosts = (await getCollection("post")).sort((a, b) =>
-    a.data.published < b.data.published ? 1 : -1,
-  );
+  const allPosts = (
+    await getCollection("post", ({ data }) => {
+      return !(import.meta.env.PROD && data.draft);
+    })
+  ).sort((a, b) => (a.data.published < b.data.published ? 1 : -1));
 
   return paginate(allPosts, { pageSize: 10 });
 }) satisfies GetStaticPaths;

@@ -1,0 +1,70 @@
+---
+title: tsconfig.json は JSON じゃない……ってコト!?
+published: 2024-01-10
+description: tsconfig.jsonはjsonじゃないことに最近気が付きました。
+tags: [jsonxxx]
+draft: true
+---
+
+import Anchor from "../../components/Anchor.astro";
+export const components = { a: Anchor };
+import ImageWrapper from "../../components/ImageWrapper.astro";
+import tsconfigFileFormat from "../../assets/20240110-what-is-tsconfig/tsconfig-file-format.png";
+import chatGptDoesntKnow from "../..//assets/20240110-what-is-tsconfig/chatgpt-doesnt-know-jsonc-specification.png";
+
+結論から言うと、tsconfig.json は JSON じゃなくて JSONC という形式だそうです。
+VSCode で Biome を使っていたら、tsconfig.json がフォーマットされなかったのがきっかけでこの事実を知りました。
+特に考えることもなく tsconfig.json にはコメント書けるんだなぁくらいに思っていましたが、ファイル形式が違うので当然だったわけです。
+JSONC についての情報は非常に少なかったのですが、[こちらの記事][1]がとても参考になりました。
+ちなみに、[JSONC は Biome で公式にサポート][2]されています。
+
+## JSONC とは
+
+JSONC は JSON with Comments の略で、JSON にコメントを書けるようにしたものらしいです。tsconfig.json や VSCode の settings.json、新しめなところだと Deno の設定ファイル（deno.jsonc）なんかでも使われています。
+tsconfig.json とかだと拡張子が同じなので JSON とどうやって区別してるのかと思ったのですが、VSCode だとエディタの右下の部分を見るとファイル形式が表示されています。
+
+<ImageWrapper
+  src={tsconfigFileFormat}
+  alt="tsconfig.json を開いたときの VSCode の画面"
+  quality="40"
+  description="tsconfig.json を開いたときの VSCode の画面"
+/>
+
+ふつうの JSON との切り替えはこの部分でできるので、他の JSON ファイルを JSONC として扱ってコメントを書くこともできそうです。
+もしくは、hoge.jsonc という感じでファイルを作れば最初から JSONC になるので、どちらかお好きな方を選びましょう。
+
+一方で、tsconfig.json を tsconfig.jsonc のように拡張子を変更するとエラーが出てしまいます。
+
+そして衝撃の事実なのですが、JSONC には正式な仕様というものが存在していないようです。
+JSON は [ECMA-404][3] という仕様がある一方で、JSONC の仕様は何も見つけられませんでした。
+頼みの綱の ChatGPT 大先生にも聞いてみたのですが、見つからなかったようです。
+
+<ImageWrapper
+  src={chatGptDoesntKnow}
+  alt="ChatGPT に JSONC について聞いたときの回答"
+  quality="40"
+  description="ChatGPT の回答。ハルシネーションすらない"
+/>
+
+ただ、このページにも書いてあるのですが、
+
+https://qiita.com/yokra9/items/1ac03876415d7fd47a65
+
+## Deno の JSONC の実装を見てみる
+
+Deno の標準ライブラリには JSONC をパースする関数があります。
+
+https://deno.land/std@0.220.1/jsonc/parse.ts?source
+https://github.com/denoland/deno_std/blob/0.220.1/jsonc/parse.ts
+
+こちらのファイルがどうやら JSONC をパースしているようです。見てもらうとわかるのですが、とても小さいファイルです。
+
+## 参考
+
+- [tsconfig.jsonはJSONじゃないと言う話 - 焼売飯店][1]
+- [言語サポート | Biome][2]
+- [ECMA-404 - Ecma International][3]
+
+[1]: https://blog.syum.ai/entry/2020/03/31/024751
+[2]: https://biomejs.dev/ja/internals/language-support/
+[3]: https://ecma-international.org/publications-and-standards/standards/ecma-404/

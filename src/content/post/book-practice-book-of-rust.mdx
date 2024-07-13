@@ -1,0 +1,23 @@
+---
+title: 「Rustの練習帳」を読んだ
+published: 2024-04-02
+description: O'Reillyの「Rustの練習帳」を読みました。
+tags: [book, rust]
+draft: true
+---
+
+import Anchor from '@components/Anchor.astro'
+export const components = {a: Anchor}
+
+- プログラミング Rust ではコメントが各行に書かれていたが、こちらではそれぞれの行に番号が振ってありサンプルコードの下にまとめて、この行は何をしているのかというのが書いてある
+
+
+```rs
+let hoge = "hoge"; ①
+let fuga = hoge.repeat(3); ②
+```
+① で `hoge` に `"hoge"` を代入している。
+② で `fuga` に `hoge` を 3 回繰り返した文字列を代入している。
+
+- コードを一気にサンプルで載せるわけではなく、途中まで載せたら自分で考えながら実装してごらん、という形式
+- 途中で tests をコピーしてこいと言われるのですが、これを toml に書かないといけない

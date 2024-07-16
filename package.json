@@ -8,8 +8,8 @@
     "build": "astro build",
     "preview": "astro preferences disable devToolbar && astro preview",
     "astro": "astro",
-    "vrt": "npm run build && playwright test",
-    "update-snapshot": "npm run build && playwright test --update-snapshots",
+    "vrt": "astro build && playwright test",
+    "update-snapshot": "astro build && playwright test --update-snapshots",
     "lint": "textlint \"./src/content/**/*.mdx\" -f pretty-error",
     "fix": "textlint \"./src/content/**/*.mdx\" --fix"
   },

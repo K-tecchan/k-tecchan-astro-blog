@@ -3,6 +3,7 @@ import type { GetStaticPaths } from "astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import MarkdownPostLayout from "../../layouts/MarkdownPostLayout.astro";
+import Anchor from "@components/Anchor.astro";
 
 interface Props {
   post: CollectionEntry<"post">;
@@ -19,10 +20,14 @@ export const getStaticPaths = (async () => {
   }));
 }) satisfies GetStaticPaths;
 
+const components = {
+  a: Anchor,
+};
+
 const { post } = Astro.props;
 const { Content } = await post.render();
 ---
 
 <MarkdownPostLayout frontmatter={post.data} id={post.id}>
-  <Content />
+  <Content components={components} />
 </MarkdownPostLayout>

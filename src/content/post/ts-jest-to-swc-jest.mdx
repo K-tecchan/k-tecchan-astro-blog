@@ -1,0 +1,150 @@
+---
+title: ts-jest から @swc/jest に移行したときにつまづいたこと
+published: 2025-02-22
+description: ts-jest から @swc/jest にしたときにつまづいたところの話です。
+tags: [test, jest]
+---
+
+最近、TypeScript を使っているリポジトリで ts-jest から @swc/jest に移行する機会がありました。
+テストの完了までだいぶかかっていたので移行したのですが、かかる時間が半分くらいになってハッピーです。
+
+ただ、移行する際につまづいた部分もあったので後の世のために共有します。
+
+## やること
+
+まずはライブラリをインストールします。
+使っているパッケージマネージャに合わせて、[公式ドキュメント][1]に書いてあるコマンドを入力すればよいです。
+
+その後、`jest.config.js`の transform 部分に @swc/jest を指定します。
+
+```js title="jest.config.js"
+module.exports = {
+    transform: {
+        '^.+\\.tsx?$': '@swc/jest',
+    },
+}
+```
+
+あとは`.swcrc`を書いてだいたいの設定は終わりです。
+プロジェクトのルートに`.swcrc`を作成すれば自動で読み込まれるみたいです。
+
+ここまで設定した時点で、ほとんどのテストはそのまま動きました。
+
+## つまづいたこと
+
+- [@swc/jestで手間をかけずにテストを早くする][2]
+- [jest.spyOnでTypeError: Cannot redefine property][3]
+
+上記の記事が参考になりますが、`import * as ~`の形でインポートして`jest.spyOn` している部分を修正する必要があります。
+以下のようにしていると`TypeError: Cannot redefine property`というエラーが出ます。
+
+```ts title="sample.ts"
+export const sampleFunc = (message: string) => {
+    return `this is ${message}`
+}
+```
+
+この関数を下のようにするとダメ。
+
+```ts
+import * as sample from './sample'
+
+const spied = jest.spyOn(sample, 'sampleFunc') // TypeError: Cannot redefine property
+```
+
+そのため、個別にインポートして`jest.mock`してから`jest.mocked`に書き換えるとエラーが出なくなります。
+
+```ts
+import { sampleFunc } from './sample'
+
+jest.mock('./sample') // './sample'に含まれる関数をすべてモック
+const mocked = jest.mocked(sampleFunc) // sampleFuncをモック関数の型定義でラップ
+```
+
+これで一安心と思いきや、テストが失敗しているものがありました。
+原因は`jest.spyOn`は既存の実装がそのまま呼ばれるのに対して、`jest.mock`はデフォルトだと実装を上書きして`undefined`を返すためです。
+
+[jest.spyOn のドキュメント](https://jestjs.io/docs/jest-object#jestspyonobject-methodname)に以下のようにあります。
+`spyOn`の挙動がむしろ例外的なんですね。
+
+> By default, jest.spyOn also calls the spied method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use jest.spyOn(object, methodName).mockImplementation(() => customImplementation) or object[methodName] = jest.fn(() => customImplementation).
+
+違いは以下のようなイメージです。
+モックしている意味は全然ないですが、イメージなので大目に見てください。
+
+```ts
+// spyOn のとき
+import * as sample from './sample'
+
+test('sample test when spyOn', () => {
+    const spied = jest.spyOn(sample, 'sampleFunc')
+    expect(spied('spy')).toBe('this is spy')  // ✅ 成功
+    expect(spied).toHaveBeenCalledWith('spy') // ✅ 成功
+})
+
+
+// mock のとき
+import { sampleFunc } from './sample'
+
+jest.mock('./sample') // sanpleFunc は () => undefined で上書き
+
+test('sample test when mock', () => {
+    const mocked = jest.mocked(sampleFunc)
+    expect(mocked('mock')).toBe('this is mock') // ❌ 失敗
+    expect(mocked).toHaveBeenCalledWith('mock') // ✅ 成功
+})
+```
+
+この挙動だと困ってしまうため、`jest.mock`の第二引数で上書きする内容を明示的に指定するとテストが通ります。
+
+```ts
+import { sampleFunc } from 'sample'
+
+jest.mock('./sample', () => {
+    const actual = jest.requireActual('./sample') // 実際の実装を取得
+    return {
+        sampleFunc: jest.fn(actual.sampleFunc) // 実際の実装を呼ぶ
+    }
+})
+
+test('sample test when mock', () => {
+    const mocked = jest.mocked(sampleFunc)
+    expect(mocked('mock')).toBe('this is mock') // ✅ 成功
+    expect(mocked).toHaveBeenCalledWith('mock') // ✅ 成功
+})
+```
+
+上記の例だと 1 つのファイルから 1 つの関数しかエクスポートしていませんが、実際には複数エクスポートする場合や、ライブラリから提供される関数のうち一部だけモックしたい場合もあると思います。
+そういった場合には、以下のように書くと良いです。
+
+```ts
+jest.mock('./sample', () => {
+    const actual = jest.requireActual('./sample')
+    return {
+        ...actual, // sampleFunc 以外はそのまま
+        sampleFunc: jest.fn(actual.sampleFunc)
+    }
+})
+```
+
+もし`sample`に関数が追加されても影響を抑えられるので、常に`...actual`のようにしておいても良いかもしれません。
+
+## まとめ
+
+- 移行自体はライブラリを入れて`.swcrc`書けばだいたい動く
+- `import * as ~`してから`jest.spyOn`している部分は`jest.mock`に修正する
+- `jest.spyOn`と`jest.mock`の違いを理解してないとダメ
+
+swc とかあんまり関係ない部分で四苦八苦していました。完全に僕の勉強不足でした。
+
+## 参考
+
+- [@swc/jest – SWC][1]
+- [@swc/jestで手間をかけずにテストを早くする][2]
+- [jest.spyOnでTypeError: Cannot redefine property][3]
+- [Jest · 🃏 Delightful JavaScript Testing][4]
+
+[1]: https://swc.rs/docs/usage/jest
+[2]: https://blog.nnn.dev/entry/2024/02/26/110000
+[3]: https://qiita.com/nakazavva/items/a1552527ce54a53c5c88
+[4]: https://jestjs.io/ja/

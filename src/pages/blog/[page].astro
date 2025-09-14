@@ -1,21 +1,21 @@
 ---
 import type { GetStaticPaths, Page } from "astro";
-import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import Pagination from "@components/Pagination.astro";
 import Posts from "@components/Posts.astro";
-
-interface Props {
-  page: Page<CollectionEntry<"post">>;
-}
 
 export const getStaticPaths = (async ({ paginate }) => {
   const allPosts = (
     await getCollection("post", ({ data }) => {
       return !(import.meta.env.PROD && data.draft);
     })
-  ).sort((a, b) => (a.data.published < b.data.published ? 1 : -1));
+  )
+    .map((post) => ({
+      ...post,
+      slug: post.id.replace(/\.mdx?$/, ""),
+    }))
+    .sort((a, b) => (a.data.published < b.data.published ? 1 : -1));
 
   return paginate(allPosts, { pageSize: 10 });
 }) satisfies GetStaticPaths;

@@ -1,18 +1,18 @@
 ---
 import type { GetStaticPaths } from "astro";
-import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import MarkdownPostLayout from "../../layouts/MarkdownPostLayout.astro";
 import Anchor from "@components/Anchor.astro";
 
-interface Props {
-  post: CollectionEntry<"post">;
-}
-
 export const getStaticPaths = (async () => {
-  const blogs = await getCollection("post", ({ data }) => {
-    return !(import.meta.env.PROD && data.draft);
-  });
+  const blogs = (
+    await getCollection("post", ({ data }) => {
+      return !(import.meta.env.PROD && data.draft);
+    })
+  ).map((post) => ({
+    ...post,
+    slug: post.id.replace(/\.mdx?$/, ""),
+  }));
 
   return blogs.map((post) => ({
     params: { slug: post.slug },
@@ -25,7 +25,7 @@ const components = {
 };
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 ---
 
 <MarkdownPostLayout frontmatter={post.data} id={post.id}>

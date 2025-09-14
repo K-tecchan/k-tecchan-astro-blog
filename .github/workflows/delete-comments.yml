@@ -1,0 +1,31 @@
+name: Delete Comment
+on:
+  pull_request:
+    types: [closed]
+jobs:
+  delete-comments:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete comment
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment => comment.user.type === 'Bot');
+
+            if (botComment) {
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+              });
+              console.log(`Deleted comment with ID: ${botComment.id}`);
+            } else {
+              console.log('No bot comment found to delete.');
+            }

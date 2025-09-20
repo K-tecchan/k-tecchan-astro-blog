@@ -7,14 +7,9 @@ import Posts from "@components/Posts.astro";
 import { slugNameMapper, type SlugType } from "src/lib/slugNameMapper";
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const allPosts = (
-    await getCollection("post", ({ data }) => {
-      return !(import.meta.env.PROD && data.draft);
-    })
-  ).map((post) => ({
-    ...post,
-    slug: post.id.replace(/\.mdx?$/, ""),
-  }));
+  const allPosts = await getCollection("post", ({ data }) => {
+    return !(import.meta.env.PROD && data.draft);
+  });
 
   const uniqueTags = [
     ...new Set(allPosts.map((post) => post.data.tags).flat()),

@@ -5,17 +5,12 @@ import MarkdownPostLayout from "../../layouts/MarkdownPostLayout.astro";
 import Anchor from "@components/Anchor.astro";
 
 export const getStaticPaths = (async () => {
-  const blogs = (
-    await getCollection("post", ({ data }) => {
-      return !(import.meta.env.PROD && data.draft);
-    })
-  ).map((post) => ({
-    ...post,
-    slug: post.id.replace(/\.mdx?$/, ""),
-  }));
+  const blogs = await getCollection("post", ({ data }) => {
+    return !(import.meta.env.PROD && data.draft);
+  });
 
   return blogs.map((post) => ({
-    params: { slug: post.slug },
+    params: { id: post.id },
     props: { post },
   }));
 }) satisfies GetStaticPaths;

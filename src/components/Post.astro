@@ -3,7 +3,7 @@ import Dates from "./Dates.astro";
 import Tags from "./Tags.astro";
 
 interface Props {
-  slug: string;
+  id: string;
   data: {
     title: string;
     description: string;
@@ -13,11 +13,11 @@ interface Props {
   };
 }
 
-const { slug, data } = Astro.props;
+const { id, data } = Astro.props;
 ---
 
 <li class="post">
-  <a href={`/blog/${slug}`} class="title">
+  <a href={`/blog/${id}`} class="title">
     {data.title}
   </a>
   <p class="description">{data.description}</p>

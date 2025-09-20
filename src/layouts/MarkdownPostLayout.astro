@@ -27,7 +27,11 @@ const { frontmatter, id } = Astro.props;
     <div class="meta">
       <Dates dates={frontmatter} />
       <span>
-        <a href={baseUrl + id} target="_blank" rel="noopener noreferrer">
+        <a
+          href={`${baseUrl}${id}.mdx`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <Image src={githubIcon} alt="GitHub" width="25" height="25" />
         </a>
       </span>

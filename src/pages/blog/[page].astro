@@ -11,10 +11,6 @@ export const getStaticPaths = (async ({ paginate }) => {
       return !(import.meta.env.PROD && data.draft);
     })
   )
-    .map((post) => ({
-      ...post,
-      slug: post.id.replace(/\.mdx?$/, ""),
-    }))
     .sort((a, b) => (a.data.published < b.data.published ? 1 : -1));
 
   return paginate(allPosts, { pageSize: 10 });

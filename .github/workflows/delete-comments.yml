@@ -1,16 +1,16 @@
-name: Delete Comment
+name: Delete Comments
 on:
   pull_request:
-    types: [closed]
+    types:
+      - closed
 permissions:
-  issues: write
   pull-requests: write
 jobs:
   delete-comments:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: Delete comment
+      - name: Delete comments
         uses: actions/github-script@v8
         with:
           script: |

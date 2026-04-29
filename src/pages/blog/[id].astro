@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from "astro";
 import { getCollection, render } from "astro:content";
 import MarkdownPostLayout from "../../layouts/MarkdownPostLayout.astro";
-import Anchor from "@components/Anchor.astro";
+import Anchor from "#components/Anchor.astro";
 
 export const getStaticPaths = (async () => {
   const blogs = await getCollection("post", ({ data }) => {

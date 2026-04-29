@@ -2,6 +2,10 @@
   "name": "blog",
   "type": "module",
   "version": "0.0.1",
+  "imports": {
+    "#components/*": "./src/components/*",
+    "#assets/*": "./src/assets/*"
+  },
   "scripts": {
     "dev": "astro preferences enable devToolbar && astro dev",
     "start": "astro dev",

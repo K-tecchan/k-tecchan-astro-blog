@@ -1,9 +1,10 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "./Layout.astro";
-import Tags from "@components/Tags.astro";
-import Dates from "@components/Dates.astro";
-import githubIcon from "@assets/github.svg";
+import Tags from "#components/Tags.astro";
+import Dates from "#components/Dates.astro";
+import githubIcon from "#assets/github.svg";
+import pkg from "../../package.json";
 
 interface Props {
   id: string;
@@ -16,8 +17,7 @@ interface Props {
   };
 }
 
-const baseUrl =
-  "https://github.com/K-tecchan/k-tecchan-astro-blog/blob/main/src/content/post/";
+const baseUrl = `https://github.com/K-tecchan/${pkg.name}/blob/main/src/content/post/`;
 const { frontmatter, id } = Astro.props;
 ---
 

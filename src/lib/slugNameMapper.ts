@@ -14,6 +14,8 @@ export const slugNameMapper = {
   vitest: "Vitest",
   git: "Git",
   jest: "Jest",
+  github: "GitHub",
+  go: "Go",
 } as const;
 
 export type SlugType = keyof typeof slugNameMapper;

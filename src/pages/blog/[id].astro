@@ -3,6 +3,7 @@ import type { GetStaticPaths } from "astro";
 import { getCollection, render } from "astro:content";
 import MarkdownPostLayout from "../../layouts/MarkdownPostLayout.astro";
 import Anchor from "#components/Anchor.astro";
+import LinkCard from "#components/LinkCard.astro";
 
 export const getStaticPaths = (async () => {
   const blogs = await getCollection("post", ({ data }) => {
@@ -17,6 +18,7 @@ export const getStaticPaths = (async () => {
 
 const components = {
   a: Anchor,
+  LinkCard,
 };
 
 const { post } = Astro.props;
